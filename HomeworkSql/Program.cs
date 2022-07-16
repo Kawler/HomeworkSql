@@ -147,7 +147,7 @@ void PrintCommands()
 {
     Console.WriteLine("Доступные команды:");
     Console.WriteLine("get-teachers - Получить список учителей");
-    Console.WriteLine("get-subjects - Получить список предметов авторов");
+    Console.WriteLine("get-subjects - Получить список предметов");
     Console.WriteLine("get-by-name - Получить предмет по имени");
     Console.WriteLine("get-teachers-grouped-by-subjects - Получить список предметов сортированный по количеству учителей");
     Console.WriteLine("delete-teacher-by-name - Удалить предмет по имени");
