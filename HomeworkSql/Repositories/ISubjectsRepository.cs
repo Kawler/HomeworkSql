@@ -13,6 +13,5 @@ namespace HomeworkSql.Repositories
         Subjects GetById(int id);
         Subjects GetByName(string name);
         void Update(Subjects subjects);
-        void Delete(Subjects subjects);
     }
 }

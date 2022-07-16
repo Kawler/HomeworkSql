@@ -4,6 +4,7 @@ using HomeworkSql.Repositories;
 const string connectionString = @"Data Source=DESKTOP-7A97DSQ;Initial Catalog=Homework;Pooling=true;Integrated Security=SSPI;TrustServerCertificate=True";
 
 ISubjectsRepository subjectsRepository = new RawSqlSubjectsRepository(connectionString);
+ITeacherRepository teacherRepository = new RawSqlTeacherRepository(connectionString);
 
 PrintCommands();
 while (true)
@@ -11,7 +12,22 @@ while (true)
     Console.WriteLine("Введите команду:");
     string command = Console.ReadLine();
 
-    if (command == "get-subjects")
+    if (command == "get-teachers")
+    {
+        IReadOnlyList<Teacher> teachers = teacherRepository.GetAll();
+        if (teachers.Count == 0)
+        {
+            Console.WriteLine("Предметы не найдены!");
+            continue;
+        }
+
+        foreach (Teacher teacher in teachers)
+        {
+            Console.WriteLine($"Id: {teacher.Id},TeachersName: {teacher.TeachersName}, TaughtSubject: {teacher.TaughtSubject}");
+        }
+    }
+
+    else if (command == "get-subjects")
     {
         IReadOnlyList<Subjects> subjects = subjectsRepository.GetAll();
         if (subjects.Count == 0)
@@ -40,19 +56,33 @@ while (true)
         }
 
     }
-    else if (command == "delete-subject-by-name")
+    else if (command == "delete-teacher-by-name")
     {
         Console.WriteLine("Введите имя:");
         string name = Console.ReadLine();
-        Subjects subject = subjectsRepository.GetByName(name);
-        if (subject == null)
+        Teacher teacher = teacherRepository.GetByName(name);
+        if (teacher == null)
         {
-            Console.WriteLine("Предмет не найден");
+            Console.WriteLine("Преподаватель не найден");
         }
         else
         {
-            subjectsRepository.Delete(subject);
-            Console.WriteLine("Предмет удален");
+            teacherRepository.Delete(teacher);
+            Console.WriteLine("реподаватель удалён");
+        }
+    }
+    else if (command == "get-teachers-grouped-by-subjects")
+    {
+        IReadOnlyList<Teacher> teachers = teacherRepository.GroupByTaughtSubject();
+        if (teachers.Count == 0)
+        {
+            Console.WriteLine("Предметы не найдены!");
+            continue;
+        }
+
+        foreach (Teacher teacher in teachers)
+        {
+            Console.WriteLine($"NumberOfTeachersTeachingTheSubject {teacher.Id}, TaughtSubject: {teacher.TaughtSubject}");
         }
     }
     else if (command == "update-subject")
@@ -69,31 +99,35 @@ while (true)
                 Console.WriteLine("Некоректные данные, повторите ввод");
             }
         } while (condition == false);
-            Subjects subject = subjectsRepository.GetById(id);
-            if (subject == null)
-            {
+        Subjects subject = subjectsRepository.GetById(id);
+        if (subject == null)
+        {
                 Console.WriteLine("Предмет не найден");
                 continue;
-            }
-        condition = false;
-        int newClassroom;
-        do
+        }
+        else
         {
+                condition = false;
+                int newClassroom;
+                do
+                {
             
-            Console.WriteLine("Введите номер класса: ");
-            string temp = Console.ReadLine();
-            condition = Int32.TryParse(temp, out newClassroom);
-            if (condition == false)
-            {
-                Console.WriteLine("Некоректные данные, повторите ввод");
-            }
-        } while (condition == false);
+                    Console.WriteLine("Введите номер класса: ");
+                    string temp = Console.ReadLine();
+                    condition = Int32.TryParse(temp, out newClassroom);
+                    if (condition == false)
+                    {
+                        Console.WriteLine("Некоректные данные, повторите ввод");
+                    }
+                } while (condition == false);
 
-        Console.WriteLine("Введите новое название предмета: ");
-        string newSubjectName = Console.ReadLine();
-        Subjects newSubject =new (id, newClassroom, newSubjectName);
-        subjectsRepository.Update(newSubject);
-        Console.WriteLine("Данные обновленны");
+                Console.WriteLine("Введите новое название предмета: ");
+                string newSubjectName = Console.ReadLine();
+                Subjects newSubject =new (id, newClassroom, newSubjectName);
+                subjectsRepository.Update(newSubject);
+                Console.WriteLine("Данные обновленны");
+        }
+        
     }
     else if (command == "help")
     {
@@ -112,9 +146,11 @@ while (true)
 void PrintCommands()
 {
     Console.WriteLine("Доступные команды:");
+    Console.WriteLine("get-teachers - Получить список учителей");
     Console.WriteLine("get-subjects - Получить список предметов авторов");
     Console.WriteLine("get-by-name - Получить предмет по имени");
-    Console.WriteLine("delete-subject-by-name - Удалить предмет по имени");
+    Console.WriteLine("get-teachers-grouped-by-subjects - Получить список предметов сортированный по количеству учителей");
+    Console.WriteLine("delete-teacher-by-name - Удалить предмет по имени");
     Console.WriteLine("update-subject - Обновить предмет");
     Console.WriteLine("help - Список команд");
     Console.WriteLine("exit - Выход");

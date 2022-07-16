@@ -88,22 +88,6 @@ namespace HomeworkSql.Repositories
             }
         }
 
-        public void Delete(Subjects subjects)
-        {
-            if (subjects == null)
-            {
-                throw new ArgumentNullException(nameof(subjects));
-            }
-
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-
-            using SqlCommand sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = "delete [Subjects] where [Id] = @id";
-            sqlCommand.Parameters.Add("@id", SqlDbType.Int).Value = subjects.Id;
-            sqlCommand.ExecuteNonQuery();
-        }
-
         public void Update(Subjects subjects)
         {
             if (subjects == null)
@@ -113,10 +97,10 @@ namespace HomeworkSql.Repositories
 
             using var connection = new SqlConnection(_connectionString);
             connection.Open();
-
             using SqlCommand sqlCommand = connection.CreateCommand();
-            sqlCommand.CommandText = "update [Subjects] set [SubjectName] = @subjectName where [Id] = @id";
             sqlCommand.CommandText = "update [Subjects] set [Classroom] = @classroom where [Id] = @id";
+            using SqlCommand sqlCommand2 = connection.CreateCommand();
+            sqlCommand.CommandText = "update [Subjects] set [SubjectName] = @subjectName where [Id] = @id";
             sqlCommand.Parameters.Add("@id", SqlDbType.Int).Value = subjects.Id;
             sqlCommand.Parameters.Add("@classroom", SqlDbType.Int).Value = subjects.Classroom;
             sqlCommand.Parameters.Add("@subjectName", SqlDbType.NVarChar, 30).Value = subjects.SubjectName;
