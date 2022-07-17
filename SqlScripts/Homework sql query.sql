@@ -34,7 +34,7 @@ values
 	('Katerine',6),
 	('Bob',7),
 	('Joe',8),
-	('Dave',9)
+	('Dave',9),
 	('Dave',3),
 	('Clark',8),
 	('Utop',8)
